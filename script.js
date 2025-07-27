@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { type: 'ice-cream', emoji: '🍦', score: 10, sfx: sfxCatch, soundName: 'catch', probability: 0.62 },
         { type: 'golden-ice', emoji: '🌟', score: 50, sfx: sfxGoldenIce, soundName: 'golden', probability: 0.08 },
         { type: 'clock', emoji: '⏰', time: 5, sfx: sfxClock, soundName: 'clock', probability: 0.08 },
-        { type: 'bomb', score: -20, sfx: sfxBomb, soundName: 'bomb', probability: 0.10, image: 'eggplant.png' }, /* 基本確率を下げ、動的に増やす */
+        { type: 'bomb', score: -20, sfx: sfxBomb, soundName: 'bomb', probability: 0.10, image: 'Eggplant.png' }, /* 基本確率を下げ、動的に増やす */
         { type: 'hamster', powerup: true, sfx: sfxPowerup, soundName: 'powerup', probability: 0.04, image: 'hamster.png' },
         { type: 'bonus-card', score: 1000, sfx: sfxBonus, soundName: 'bonus', probability: 0, image: '' }, // imageは動的に設定
         { type: 'super-bomb', emoji: '💣', score: -1000, sfx: sfxBomb, soundName: 'bomb', probability: 0 },
