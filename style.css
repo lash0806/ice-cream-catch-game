@@ -1,0 +1,320 @@
+/* --- 全体のスタイル --- */
+body, html {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-family: 'M PLUS Rounded 1c', sans-serif;
+    background-color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* --- ゲームコンテナ --- */
+#game-container {
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+    border: 3px solid #fff;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+    /* 縦長のレイアウトに修正 */
+    width: 56.25vh; /* 9:16 aspect ratio */
+    height: 100vh;
+    max-width: 100vw;
+    max-height: 100vh;
+}
+
+/* --- プレイヤー --- */
+#player {
+    position: absolute;
+    bottom: 15px;
+    width: 80px;
+    height: 80px;
+    background-image: url('player.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    z-index: 10;
+}
+
+
+
+/* --- アイテム共通 --- */
+.item {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    font-size: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.item img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.hamster img {
+    width: 120%;
+    height: 120%;
+}
+
+/* --- UI要素 (info-board) --- */
+#info-board {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    background: linear-gradient(145deg, rgba(135, 206, 250, 0.85), rgba(173, 216, 230, 0.85)); /* 淡いブルー系に変更 */
+    padding: 12px 15px;
+    border-radius: 20px;
+    color: #003366; /* 濃い青系の文字色に変更 */
+    font-size: 20px; /* 文字サイズを大きく */
+    font-weight: 700;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7); /* 白いテキストシャドウで可読性向上 */
+    z-index: 20;
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+}
+
+.info-left,
+.info-right {
+    display: flex;
+    flex-direction: column;
+}
+
+.info-right {
+    align-items: flex-end;
+}
+
+/* スコアの色を濃い色に変更 */
+.info-right span:nth-child(1) {
+    color: #005A9C; /* 濃い青 */
+}
+.info-right span:nth-child(2) {
+    color: #2E8B57; /* シーグリーン */
+}
+.info-right span:nth-child(3) {
+    color: #C71585; /* ミディアムバイオレットレッド */
+}
+.info-right span:nth-child(4) {
+    color: #FF8C00; /* ダークオレンジ */
+    font-weight: bold;
+}
+
+#info-board span {
+    margin-bottom: 5px;
+}
+
+.time-container {
+    font-size: 1.5em; /* タイムの文字を大きく */
+    font-weight: bold;
+    color: #B22222; /* ファイアブリック (濃い赤) */
+}
+
+#time-gauge-container {
+    position: absolute;
+    top: 200px; /* 位置を大幅に下に調整 */
+    left: 10px;
+    right: 10px;
+    height: 15px;
+    background-color: rgba(0, 0, 0, 0.7);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 8px;
+    z-index: 15;
+}
+
+#time-gauge {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, #32CD32, #ADFF2F, #FFFF00, #FFA500, #FF4500);
+    border-radius: 4px;
+    transition: width 0.5s linear;
+}
+
+/* --- スクリーン共通 --- */
+.screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    color: white;
+    display: flex;
+    flex-direction: column; /* 縦方向のフレックスボックスに変更 */
+    justify-content: center; /* 上下中央揃え */
+    align-items: center; /* 左右中央揃え */
+    text-align: center;
+    z-index: 30;
+    background-size: cover;
+    background-position: center;
+    box-sizing: border-box; /* paddingを含めてサイズ計算 */
+}
+
+.screen-content {
+    padding: 20px;
+    /* #level-end-screen と #game-over-screen にスタイルを移動したため、ここでは削除 */
+}
+
+#start-screen .screen-content {
+    position: absolute;
+    top: 35%; /* 再度微調整 */
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+#level-end-screen, #game-over-screen { display: none; }
+
+h1 { font-size: 2.5rem; margin-bottom: 1rem; }
+h2 { font-size: 2rem; margin-bottom: 1rem; }
+p { font-size: 1.2rem; margin-bottom: 2rem; }
+
+button {
+    padding: 12px 25px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    cursor: pointer;
+    border: 2px solid white;
+    border-radius: 10px;
+    background-color: transparent;
+    color: white;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+button:hover {
+    background-color: white;
+    color: black;
+}
+
+#start-button {
+    background-color: white;
+    color: #eb82bb;
+    border: 2px solid #eb82bb;
+}
+
+#start-button:hover {
+    background-color: #eb82bb;
+    color: white;
+}
+
+/* --- アニメーション --- */
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.bonus-card {
+    animation: rotate 2s linear infinite;
+}
+
+.flash-effect {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    opacity: 0;
+    animation: flash 0.3s ease-out;
+    pointer-events: none;
+    z-index: 100;
+}
+
+@keyframes flash {
+    0% { opacity: 0.7; }
+    100% { opacity: 0; }
+}
+
+/* --- レベルクリア画面のスタイル調整 --- */
+#level-end-screen .screen-content,
+#game-over-screen .screen-content {
+    border: 3px solid #22aeff;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+    position: absolute;
+    top: 40%; /* 上に移動 */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60%; /* 幅を小さく */
+}
+
+#level-score, #final-score {
+    font-size: 2.5rem;
+    color: white;
+    margin-bottom: 20px;
+}
+
+#next-level-button, #restart-button {
+    font-size: 1.5rem;
+    color: white;
+    background-color: #22aeff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+}
+
+#next-level-button:hover, #restart-button:hover {
+    background-color: #1a8cd8;
+}
+
+
+/* --- メディアクエリ --- */
+@media (max-width: 600px) {
+    #game-container {
+        width: 100vw;
+        height: 100vh;
+        border: none;
+    }
+
+    #info-board {
+        font-size: 16px;
+        padding: 8px 10px;
+        border-radius: 15px;
+    }
+
+    .time-container {
+        font-size: 1.2em;
+    }
+
+    #time-gauge-container {
+        top: 160px; /* スマホ用に調整 */
+        height: 12px;
+    }
+
+    #player {
+        width: 60px;
+        height: 60px;
+    }
+
+    .item {
+        width: 50px;
+        height: 50px;
+        font-size: 30px;
+    }
+
+    button {
+        padding: 10px 20px;
+        font-size: 1rem;
+    }
+
+    #level-end-screen .screen-content,
+    #game-over-screen .screen-content {
+        width: 80%;
+        top: 45%;
+    }
+
+    #level-score, #final-score {
+        font-size: 2rem;
+    }
+
+    #next-level-button, #restart-button {
+        font-size: 1.2rem;
+    }
+}
+

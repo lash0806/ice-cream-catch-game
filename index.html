@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>アイスクリームキャッチゲーム</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <audio id="bgm" loop></audio>
+    <audio id="sfx-catch"></audio>
+    <audio id="sfx-bomb"></audio>
+    <audio id="sfx-powerup"></audio>
+    <audio id="sfx-clock"></audio>
+    <audio id="sfx-golden-ice"></audio>
+    <audio id="sfx-level-end" preload="auto"></audio>
+    <audio id="sfx-bonus" preload="auto"></audio>
+    <audio id="sfx-mst" preload="auto"></audio>
+
+    <div id="game-container">
+        <div id="player"></div>
+        <div id="info-board">
+            <div class="info-left">
+                <span>レベル: <span id="level-display">1</span></span>
+                <span class="time-container">タイム: <span id="time-display">60</span></span>
+                <span>スコア: <span id="score-display">0</span></span>
+            </div>
+            <div class="info-right">
+                <span>レベル1: <span id="level1-score-display">0</span></span>
+                <span>レベル2: <span id="level2-score-display">0</span></span>
+                <span>レベル3: <span id="level3-score-display">0</span></span>
+                <span>合計: <span id="total-score-display">0</span></span>
+            </div>
+        </div>
+        <div id="time-gauge-container">
+            <div id="time-gauge"></div>
+        </div>
+
+        <div id="start-screen" class="screen">
+            <div class="screen-content">
+                <button id="start-button">ゲームスタート！</button>
+            </div>
+        </div>
+
+        <div id="level-end-screen" class="screen" style="display: none;">
+            <div class="screen-content">
+                <p>スコア: <span id="level-score">0</span>点</p>
+                <button id="next-level-button">次のレベルへ</button>
+            </div>
+        </div>
+
+        <div id="game-over-screen" class="screen" style="display: none;">
+            <div class="screen-content">
+                <p>合計スコア: <span id="final-score">0</span>点</p>
+                <button id="restart-button">もう一度プレイ</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
