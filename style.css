@@ -8,7 +8,8 @@ body, html {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100%; /* 100vhから100%に変更 */
+    width: 100%;
+    height: 100vh; /* vhでビューポート基準を明確化 */
 }
 
 /* --- ゲームコンテナ --- */
@@ -19,16 +20,8 @@ body, html {
     overflow: hidden;
     border: 3px solid #fff;
     box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
-    /* 画面全体にフィットし、縦横比を維持しつつ中央に配置 */
-    position: absolute; /* 絶対配置に変更 */
-    top: 0; bottom: 0; left: 0; right: 0; /* 全方向に0を設定 */
     margin: auto; /* 中央揃え */
-    width: 100%; /* 親要素の幅に合わせる */
-    height: 100%; /* 親要素の高さに合わせる */
-    max-width: calc(100vh * 9 / 16); /* 9:16の縦横比を維持しつつ、高さを基準に最大幅を設定 */
-    max-height: 100vh; /* 高さはビューポートの高さまで */
-    min-height: -webkit-fill-available; /* iOSのvh問題対策 */
-    aspect-ratio: 9 / 16; /* 縦横比を9:16に固定 */
+    /* サイズとアスペクト比はJSで制御するため削除 */
 }
 
 /* --- プレイヤー --- */
