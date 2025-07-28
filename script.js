@@ -84,7 +84,7 @@ window.onload = () => {
             { type: 'monster-2', image: 'mst-2.png', sfx: sfxMst, soundName: 'mst', probability: 0.01, debuff: { type: 'reverse', duration: 5000 } }
         ];
         
-        bgm.volume = 0.2;
+bgm.volume = 0.2;
         [sfxCatch, sfxPowerup, sfxClock, sfxGoldenIce, sfxLevelEnd, sfxBonus, sfxBomb, sfxMst].forEach(sfx => {
             if (sfx) sfx.volume = 0.7;
         });
