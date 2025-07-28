@@ -76,7 +76,7 @@ window.onload = () => {
             { type: 'ice-cream', score: 10, sfx: sfxCatch, soundName: 'catch', probability: 0.62, image: 'soft cream.png' },
             { type: 'golden-ice', emoji: '🌟', score: 50, sfx: sfxGoldenIce, soundName: 'golden', probability: 0.08 },
             { type: 'clock', emoji: '⏰', time: 5, sfx: sfxClock, soundName: 'clock', probability: 0.08 },
-            // { type: 'bomb', score: -20, sfx: sfxBomb, soundName: 'bomb', probability: 0.10, image: 'Eggplant.png' }, // 爆弾を削除
+            { type: 'bomb', score: -20, sfx: sfxBomb, soundName: 'bomb', probability: 0.10, image: 'Eggplant.png' }, // 爆弾を再導入
             { type: 'hamster', powerup: true, sfx: sfxPowerup, soundName: 'powerup', probability: 0.04, image: 'hamster.png' },
             { type: 'bonus-card', score: 1000, sfx: sfxBonus, soundName: 'bonus', probability: 0, image: '' },
             { type: 'super-bomb', emoji: '💣', score: -1000, sfx: sfxBomb, soundName: 'bomb', probability: 0 },
@@ -143,7 +143,7 @@ window.onload = () => {
             audioElement.appendChild(oggSource);
             audioElement.appendChild(mp3Source);
             audioElement.load();
-            audioElement.play().catch(e => {});
+            audioElement.play().catch(e => { console.error("Audio play failed:", e); }); // エラーログを追加
         };
 
         function playMusicForLevel(levelNum) {
@@ -343,9 +343,9 @@ window.onload = () => {
             // ハムスターパワーアップの回数制限とサイズ調整
             if (itemData.powerup && powerupLevel < 2) { // 2回までに制限
                 powerupLevel++;
-                player.style.transform = `scale(${1 + powerupLevel * 0.25})`; // 拡大率を調整
+                player.style.transform = `scale(${1 + powerupLevel * 0.2})`; // 拡大率を調整 (0.25 -> 0.2)
                 // プレイヤーのbottom位置を調整 (player.offsetHeightは現在のサイズを反映)
-                player.style.bottom = `${gameContainer.offsetHeight * 0.08 + (player.offsetHeight * (powerupLevel - 1) * 0.25)}px`; 
+                player.style.bottom = `${gameContainer.offsetHeight * 0.08 + (player.offsetHeight * (powerupLevel - 1) * 0.2)}px`; 
                 if (powerupTimer) clearTimeout(powerupTimer);
                 powerupEndTime = Date.now() + (5000 * powerupLevel);
                 powerupTimer = setTimeout(() => {
@@ -444,7 +444,7 @@ window.onload = () => {
                 mainItem.image = `soft cream.png`;
                 mainItem.score = 10;
                 if (level === 2) { mainItem.image = 'candy.png'; mainItem.score = 15; }
-                if (level === 3) { mainItem.image = 'ice-2.png'; mainItem.score = 20; } // ice 2.png -> ice-2.png に修正
+                if (level === 3) { mainItem.image = 'soft cream.png'; mainItem.score = 20; } // ice-2.png -> soft cream.png に一時的に変更
             }
 
             gameContainer.style.backgroundImage = `url('${levels[level].bg}')`;
