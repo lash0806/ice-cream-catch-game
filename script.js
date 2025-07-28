@@ -23,12 +23,14 @@ window.onload = () => {
         player.style.width = `${gameContainer.offsetWidth * 0.15}px`;
         player.style.height = `${gameContainer.offsetWidth * 0.15}px`;
         player.style.left = `${gameContainer.offsetWidth / 2 - player.offsetWidth / 2}px`;
-        // プレイヤーの初期位置をゲームコンテナの高さに基づいて設定
         player.style.bottom = `${gameContainer.offsetHeight * 0.08}px`;
+
+        console.log('setGameSize executed:', { width: gameContainer.offsetWidth, height: gameContainer.offsetHeight });
     }
 
     // --- Main Game Logic Initialization Function ---
     function initializeGameLogic() {
+        console.log('initializeGameLogic started.');
         const scoreDisplay = document.getElementById('score-display');
         const timeDisplay = document.getElementById('time-display');
         const timeGauge = document.getElementById('time-gauge');
@@ -92,7 +94,7 @@ window.onload = () => {
             const maxX = gameContainer.offsetWidth - player.offsetWidth;
             playerX = Math.max(minX, Math.min(x, maxX));
             player.style.left = `${playerX}px`;
-        }
+        };
 
         function handleMove(clientX) {
             const containerRect = gameContainer.getBoundingClientRect();
@@ -142,12 +144,12 @@ window.onload = () => {
             audioElement.appendChild(mp3Source);
             audioElement.load();
             audioElement.play().catch(e => {});
-        }
+        };
 
         function playMusicForLevel(levelNum) {
             const musicBaseName = levels[levelNum].music;
             playSound(bgm, musicBaseName);
-        }
+        };
 
         function createItem() {
             const canSpawnSuperBomb = level >= 2 && timeLeft < 30 && superBombSpawnedCount < 2 && Math.random() < 0.05;
@@ -199,7 +201,7 @@ window.onload = () => {
             }
 
             spawnItemElement(selectedItem);
-        }
+        };
 
         function spawnItemElement(itemData, cardId = null) {
             const itemElement = document.createElement('div');
@@ -254,7 +256,7 @@ window.onload = () => {
             }
 
             gameContainer.appendChild(itemElement);
-        }
+        };
 
         function spawnBonusCard() {
             if (availableCards.length === 0) return;
@@ -263,7 +265,7 @@ window.onload = () => {
             const cardId = availableCards.splice(cardIndex, 1)[0];
             const cardItemData = items.find(i => i.type === 'bonus-card');
             spawnItemElement(cardItemData, cardId);
-        }
+        };
 
         function gameLoop() {
             const timeElapsed = 60 - timeLeft;
@@ -317,7 +319,7 @@ window.onload = () => {
                     item.remove();
                 }
             });
-        }
+        };
 
         function handleItemCatch(item) {
             const type = item.dataset.type;
@@ -368,38 +370,38 @@ window.onload = () => {
             level2ScoreDisplay.innerText = levelScores[1];
             level3ScoreDisplay.innerText = levelScores[2];
             totalScoreDisplay.innerText = totalScore;
-        }
+        };
 
         function activateDebuff(debuff) {
             const duration = debuff.duration ? debuff.duration + (level - 1) * 500 : undefined;
 
             if (debuff.type === 'slow') {
                 isSlowed = true;
-                player.style.backgroundImage = 'url('player-mono.png')';
+                player.style.backgroundImage = 'url(\'player-mono.png\')';
                 if (slowTimer) clearTimeout(slowTimer);
                 slowTimer = setTimeout(() => {
                     isSlowed = false;
-                    player.style.backgroundImage = 'url('player.png')';
+                    player.style.backgroundImage = 'url(\'player.png\')';
                 }, duration);
             }
 
             if (debuff.type === 'reverse') {
                 isReversed = true;
-                player.style.backgroundImage = 'url('player-mono.png')';
+                player.style.backgroundImage = 'url(\'player-mono.png\')';
                 if (reverseTimer) clearTimeout(reverseTimer);
                 reverseTimer = setTimeout(() => {
                     isReversed = false;
-                    player.style.backgroundImage = 'url('player.png')';
+                    player.style.backgroundImage = 'url(\'player.png\')';
                 }, duration);
             }
-        }
+        };
 
         function triggerFlashEffect() {
             const flash = document.createElement('div');
             flash.classList.add('flash-effect');
             gameContainer.appendChild(flash);
             setTimeout(() => flash.remove(), 300);
-        }
+        };
 
         function updateTimer() {
             timeLeft--;
@@ -409,7 +411,7 @@ window.onload = () => {
             if (timeLeft <= 0) {
                 endLevel();
             }
-        }
+        };
 
         function startLevel() {
             score = 0;
@@ -432,7 +434,7 @@ window.onload = () => {
             
             player.style.transform = 'scale(1)';
             player.style.bottom = `${gameContainer.offsetHeight * 0.08}px`; // プレイヤーの位置を再設定
-            player.style.backgroundImage = 'url('player.png')';
+            player.style.backgroundImage = 'url(\'player.png\')';
 
             playerX = gameContainer.offsetWidth / 2 - player.offsetWidth / 2;
             player.style.left = `${playerX}px`;
@@ -451,7 +453,7 @@ window.onload = () => {
             gameInterval = setInterval(gameLoop, 50);
             timerInterval = setInterval(updateTimer, 1000);
             itemInterval = setInterval(createItem, levels[level].spawnRate);
-        }
+        };
 
         function endLevel() {
             clearInterval(gameInterval);
@@ -477,7 +479,7 @@ window.onload = () => {
                 gameOverScreen.style.backgroundImage = `url('final result.jpg')`;
                 gameOverScreen.style.display = 'flex';
             }
-        }
+        };
         
         startButton.addEventListener('click', () => {
             // iOSでの音声再生アンロック
@@ -518,7 +520,7 @@ window.onload = () => {
         player.style.backgroundImage = "url('player.png')";
         startButton.disabled = false;
         startButton.textContent = 'ゲームスタート！';
-    }
+    };
 
     // Call setGameSize initially and on resize
     setGameSize();

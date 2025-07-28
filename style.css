@@ -15,6 +15,7 @@ body, html {
 /* --- ゲームコンテナ --- */
 #game-container {
     position: relative;
+    background-color: #333; /* 一時的な背景色 */
     background-size: cover;
     background-position: center;
     overflow: hidden;
