@@ -1,0 +1,1 @@
+Fix: Corrected image path for eggplant.png to Eggplant.png
