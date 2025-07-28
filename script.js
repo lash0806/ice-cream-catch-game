@@ -18,12 +18,6 @@ window.onload = () => {
 
         gameContainer.style.height = `${containerHeight}px`;
         gameContainer.style.width = `${containerWidth}px`;
-        // gameContainer.style.position = 'absolute'; // 削除
-        // gameContainer.style.top = '0'; // 削除
-        // gameContainer.style.left = '0'; // 削除
-        // gameContainer.style.right = '0'; // 削除
-        // gameContainer.style.bottom = '0'; // 削除
-        // gameContainer.style.margin = 'auto'; // 削除
 
         // プレイヤーのサイズと位置をここで設定
         player.style.width = `${gameContainer.offsetWidth * 0.15}px`;
@@ -87,7 +81,7 @@ window.onload = () => {
             { type: 'monster-2', image: 'mst-2.png', sfx: sfxMst, soundName: 'mst', probability: 0.01, debuff: { type: 'reverse', duration: 5000 } }
         ];
         
-bgm.volume = 0.2;
+        bgm.volume = 0.2;
         [sfxCatch, sfxPowerup, sfxClock, sfxGoldenIce, sfxLevelEnd, sfxBonus, sfxBomb, sfxMst].forEach(sfx => {
             if (sfx) sfx.volume = 0.7;
         });
@@ -108,7 +102,7 @@ bgm.volume = 0.2;
                 targetX = containerCenterX - (targetX + player.offsetWidth / 2 - containerCenterX) - player.offsetWidth / 2;
             }
             movePlayer(targetX);
-        }
+        };
 
         document.addEventListener('keydown', (e) => {
             if (isSlowed) return;
@@ -255,7 +249,7 @@ bgm.volume = 0.2;
                 itemElement.dataset.startTime = Date.now();
                 itemElement.dataset.startX = parseFloat(itemElement.style.left);
                 itemElement.dataset.amplitude = (Math.random() * 200 + 150) * (Math.random() < 0.5 ? 1 : -1);
-                itemElement.dataset.frequency = Math.random() * 0.002 + 0.001;
+                itemElement.dataset.frequency = 0.001; // 固定値に変更
             }
 
             gameContainer.appendChild(itemElement);
@@ -293,7 +287,7 @@ bgm.volume = 0.2;
                     const timeElapsed = Date.now() - startTime;
                     const startX = parseFloat(item.dataset.startX);
                     const amplitude = parseFloat(item.dataset.amplitude);
-                    const frequency = Math.random() * 0.002 + 0.001;
+                    const frequency = parseFloat(item.dataset.frequency);
                     top += currentSpeed * 1.5;
                     let left = startX + amplitude * Math.sin(timeElapsed * frequency);
                     item.style.left = `${left}px`;
@@ -346,13 +340,13 @@ bgm.volume = 0.2;
             if (itemData.powerup && powerupLevel < 3) {
                 powerupLevel++;
                 player.style.transform = `scale(${1 + powerupLevel * 0.5})`;
-                player.style.bottom = `${15 + 20 * powerupLevel}px`;
+                player.style.bottom = `${gameContainer.offsetHeight * 0.08 + (player.offsetWidth * (powerupLevel - 1) * 0.5)}px`; // プレイヤーの位置を調整
                 if (powerupTimer) clearTimeout(powerupTimer);
                 powerupEndTime = Date.now() + (5000 * powerupLevel);
                 powerupTimer = setTimeout(() => {
                     powerupLevel = 0;
                     player.style.transform = 'scale(1)';
-                    player.style.bottom = '15px';
+                    player.style.bottom = `${gameContainer.offsetHeight * 0.08}px`;
                 }, powerupEndTime - Date.now());
             }
             
