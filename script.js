@@ -23,6 +23,7 @@ window.onload = () => {
         player.style.width = `${gameContainer.offsetWidth * 0.15}px`;
         player.style.height = `${gameContainer.offsetWidth * 0.15}px`;
         player.style.left = `${gameContainer.offsetWidth / 2 - player.offsetWidth / 2}px`;
+        // プレイヤーの初期位置をゲームコンテナの高さに基づいて設定
         player.style.bottom = `${gameContainer.offsetHeight * 0.08}px`;
     }
 
@@ -73,7 +74,7 @@ window.onload = () => {
             { type: 'ice-cream', score: 10, sfx: sfxCatch, soundName: 'catch', probability: 0.62, image: 'soft cream.png' },
             { type: 'golden-ice', emoji: '🌟', score: 50, sfx: sfxGoldenIce, soundName: 'golden', probability: 0.08 },
             { type: 'clock', emoji: '⏰', time: 5, sfx: sfxClock, soundName: 'clock', probability: 0.08 },
-            { type: 'bomb', score: -20, sfx: sfxBomb, soundName: 'bomb', probability: 0.10, image: 'Eggplant.png' },
+            // { type: 'bomb', score: -20, sfx: sfxBomb, soundName: 'bomb', probability: 0.10, image: 'Eggplant.png' }, // 爆弾を削除
             { type: 'hamster', powerup: true, sfx: sfxPowerup, soundName: 'powerup', probability: 0.04, image: 'hamster.png' },
             { type: 'bonus-card', score: 1000, sfx: sfxBonus, soundName: 'bonus', probability: 0, image: '' },
             { type: 'super-bomb', emoji: '💣', score: -1000, sfx: sfxBomb, soundName: 'bomb', probability: 0 },
@@ -337,16 +338,18 @@ window.onload = () => {
                 timeLeft += itemData.time;
                 if (timeLeft > 60) timeLeft = 60;
             }
-            if (itemData.powerup && powerupLevel < 3) {
+            // ハムスターパワーアップの回数制限とサイズ調整
+            if (itemData.powerup && powerupLevel < 2) { // 2回までに制限
                 powerupLevel++;
-                player.style.transform = `scale(${1 + powerupLevel * 0.5})`;
-                player.style.bottom = `${gameContainer.offsetHeight * 0.08 + (player.offsetWidth * (powerupLevel - 1) * 0.5)}px`; // プレイヤーの位置を調整
+                player.style.transform = `scale(${1 + powerupLevel * 0.25})`; // 拡大率を調整
+                // プレイヤーのbottom位置を調整 (player.offsetHeightは現在のサイズを反映)
+                player.style.bottom = `${gameContainer.offsetHeight * 0.08 + (player.offsetHeight * (powerupLevel - 1) * 0.25)}px`; 
                 if (powerupTimer) clearTimeout(powerupTimer);
                 powerupEndTime = Date.now() + (5000 * powerupLevel);
                 powerupTimer = setTimeout(() => {
                     powerupLevel = 0;
                     player.style.transform = 'scale(1)';
-                    player.style.bottom = `${gameContainer.offsetHeight * 0.08}px`;
+                    player.style.bottom = `${gameContainer.offsetHeight * 0.08}px`; // 元の位置に戻す
                 }, powerupEndTime - Date.now());
             }
             
@@ -372,21 +375,21 @@ window.onload = () => {
 
             if (debuff.type === 'slow') {
                 isSlowed = true;
-                player.style.backgroundImage = 'url(\'player-mono.png\')';
+                player.style.backgroundImage = 'url('player-mono.png')';
                 if (slowTimer) clearTimeout(slowTimer);
                 slowTimer = setTimeout(() => {
                     isSlowed = false;
-                    player.style.backgroundImage = 'url(\'player.png\')';
+                    player.style.backgroundImage = 'url('player.png')';
                 }, duration);
             }
 
             if (debuff.type === 'reverse') {
                 isReversed = true;
-                player.style.backgroundImage = 'url(\'player-mono.png\')';
+                player.style.backgroundImage = 'url('player-mono.png')';
                 if (reverseTimer) clearTimeout(reverseTimer);
                 reverseTimer = setTimeout(() => {
                     isReversed = false;
-                    player.style.backgroundImage = 'url(\'player.png\')';
+                    player.style.backgroundImage = 'url('player.png')';
                 }, duration);
             }
         }
@@ -429,7 +432,7 @@ window.onload = () => {
             
             player.style.transform = 'scale(1)';
             player.style.bottom = `${gameContainer.offsetHeight * 0.08}px`; // プレイヤーの位置を再設定
-            player.style.backgroundImage = 'url(\'player.png\')';
+            player.style.backgroundImage = 'url('player.png')';
 
             playerX = gameContainer.offsetWidth / 2 - player.offsetWidth / 2;
             player.style.left = `${playerX}px`;
@@ -439,7 +442,7 @@ window.onload = () => {
                 mainItem.image = `soft cream.png`;
                 mainItem.score = 10;
                 if (level === 2) { mainItem.image = 'candy.png'; mainItem.score = 15; }
-                if (level === 3) { mainItem.image = 'ice 2.png'; mainItem.score = 20; }
+                if (level === 3) { mainItem.image = 'ice-2.png'; mainItem.score = 20; } // ice 2.png -> ice-2.png に修正
             }
 
             gameContainer.style.backgroundImage = `url('${levels[level].bg}')`;
@@ -477,6 +480,14 @@ window.onload = () => {
         }
         
         startButton.addEventListener('click', () => {
+            // iOSでの音声再生アンロック
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const buffer = audioContext.createBuffer(1, 1, 22050);
+            const source = audioContext.createBufferSource();
+            source.buffer = buffer;
+            source.connect(audioContext.destination);
+            source.start(0);
+            
             startScreen.style.display = 'none';
             playMusicForLevel(level);
             startLevel();
