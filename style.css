@@ -27,11 +27,11 @@ body, html {
 /* --- プレイヤー --- */
 #player {
     position: absolute;
-    bottom: 8%; /* 画面下部からの相対位置をさらに上げる */
-    left: 50%; /* 水平方向の中央に配置 */
-    transform: translateX(-50%); /* 中央揃えの微調整 */
-    width: 15%; /* 画面幅に対する相対サイズ */
-    height: auto; /* 縦横比を維持 */
+    background-size: contain;
+    background-repeat: no-repeat;
+    transition: transform 0.2s ease-out;
+    z-index: 10;
+}
 
 
 
