@@ -25,6 +25,7 @@ body, html {
     /* サイズとアスペクト比はJSで制御するため削除 */
 }
 
+--- style.css ---
 /* --- プレイヤー --- */
 #player {
     position: absolute;
@@ -32,6 +33,10 @@ body, html {
     background-repeat: no-repeat;
     transition: transform 0.2s ease-out;
     z-index: 10;
+    /* プレイヤーの底辺をゲーム画面の底辺に合わせる */
+    /* bottom は JS で動的に計算するため、ここでは指定しないか、0 にしておく */
+    /* transform-origin を bottom に設定して、拡大時に上方向に伸びるようにする */
+    transform-origin: bottom center; /* 拡大の基準点を下中央に設定 */
 }
 
 

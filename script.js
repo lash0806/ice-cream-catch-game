@@ -1,8 +1,20 @@
+--- script.js ---
 window.onload = () => {
     const gameContainer = document.getElementById('game-container');
     const player = document.getElementById('player');
     const startScreen = document.getElementById('start-screen');
     const startButton = document.getElementById('start-button');
+
+    // Audio elements
+    const bgm = document.getElementById('bgm');
+    const sfxCatch = document.getElementById('sfx-catch');
+    const sfxBomb = document.getElementById('sfx-bomb'); // 爆弾を削除しても、参照は残しておきます
+    const sfxPowerup = document.getElementById('sfx-powerup');
+    const sfxClock = document.getElementById('sfx-clock');
+    const sfxGoldenIce = document.getElementById('sfx-golden-ice');
+    const sfxLevelEnd = document.getElementById('sfx-level-end');
+    const sfxBonus = document.getElementById('sfx-bonus');
+    const sfxMst = document.getElementById('sfx-mst');
 
     // --- Game Sizing ---
     function setGameSize() {
@@ -23,9 +35,9 @@ window.onload = () => {
         player.style.width = `${gameContainer.offsetWidth * 0.15}px`;
         player.style.height = `${gameContainer.offsetWidth * 0.15}px`;
         player.style.left = `${gameContainer.offsetWidth / 2 - player.offsetWidth / 2}px`;
-        player.style.bottom = `${gameContainer.offsetHeight * 0.08}px`;
 
-        console.log('setGameSize executed:', { width: gameContainer.offsetWidth, height: gameContainer.offsetHeight });
+        // プレイヤーのbottom位置をゲーム画面の最下部に固定
+        player.style.bottom = `0px`; // 必ず0pxに設定
     }
 
     // --- Main Game Logic Initialization Function ---
@@ -39,15 +51,6 @@ window.onload = () => {
         const level2ScoreDisplay = document.getElementById('level2-score-display');
         const level3ScoreDisplay = document.getElementById('level3-score-display');
         const totalScoreDisplay = document.getElementById('total-score-display');
-        const bgm = document.getElementById('bgm');
-        const sfxCatch = document.getElementById('sfx-catch');
-        const sfxBomb = document.getElementById('sfx-bomb');
-        const sfxPowerup = document.getElementById('sfx-powerup');
-        const sfxClock = document.getElementById('sfx-clock');
-        const sfxGoldenIce = document.getElementById('sfx-golden-ice');
-        const sfxLevelEnd = document.getElementById('sfx-level-end');
-        const sfxBonus = document.getElementById('sfx-bonus');
-        const sfxMst = document.getElementById('sfx-mst');
         const levelEndScreen = document.getElementById('level-end-screen');
         const gameOverScreen = document.getElementById('game-over-screen');
         const nextLevelButton = document.getElementById('next-level-button');
@@ -57,7 +60,7 @@ window.onload = () => {
 
         let score = 0, level = 1, timeLeft = 60, gameSpeed = 0, powerupLevel = 0;
         let levelScores = [0, 0, 0], totalScore = 0;
-        let powerupTimer = null, powerupEndTime = 0;
+        let powerupTimer = null; // powerupEndTime は不要に
         let gameInterval, timerInterval, itemInterval;
         let bonusCardSpawnedForLevel = false, superBombSpawnedCount = 0;
         let availableCards = [1, 2, 3], bonusScore = 0;
@@ -72,11 +75,11 @@ window.onload = () => {
         };
         const MAX_LEVEL = Object.keys(levels).length;
 
+        // 爆弾アイテムを完全に削除
         const items = [
             { type: 'ice-cream', score: 10, sfx: sfxCatch, soundName: 'catch', probability: 0.62, image: 'soft cream.png' },
             { type: 'golden-ice', emoji: '🌟', score: 50, sfx: sfxGoldenIce, soundName: 'golden', probability: 0.08 },
             { type: 'clock', emoji: '⏰', time: 5, sfx: sfxClock, soundName: 'clock', probability: 0.08 },
-            { type: 'bomb', score: -20, sfx: sfxBomb, soundName: 'bomb', probability: 0.10, image: 'Eggplant.png' }, // 爆弾を再導入
             { type: 'hamster', powerup: true, sfx: sfxPowerup, soundName: 'powerup', probability: 0.04, image: 'hamster.png' },
             { type: 'bonus-card', score: 1000, sfx: sfxBonus, soundName: 'bonus', probability: 0, image: '' },
             { type: 'super-bomb', emoji: '💣', score: -1000, sfx: sfxBomb, soundName: 'bomb', probability: 0 },
@@ -84,10 +87,42 @@ window.onload = () => {
             { type: 'monster-2', image: 'mst-2.png', sfx: sfxMst, soundName: 'mst', probability: 0.01, debuff: { type: 'reverse', duration: 5000 } }
         ];
         
-bgm.volume = 0.2;
+        // 音源のパスをassetsフォルダ内に統一 (もしassets/soundsにある場合)
+        // src属性を動的に変更するのではなく、audioタグに直接sourceを指定する方式
+        // index.html の audio タグに src 属性を直接設定することを推奨します。
+        // 例: <audio id="sfx-catch" src="assets/sounds/catch.mp3" preload="auto"></audio>
+        // または、以下のようにJSで設定する場合（推奨はHTML）
+        bgm.src = 'assets/sounds/bgm-level-1.mp3'; // デフォルトBGM
+        sfxCatch.src = 'assets/sounds/catch.mp3';
+        sfxBomb.src = 'assets/sounds/bomb.mp3'; // 爆弾を削除しても、sfxBombの参照は残しておきます
+        sfxPowerup.src = 'assets/sounds/powerup.mp3';
+        sfxClock.src = 'assets/sounds/clock.mp3';
+        sfxGoldenIce.src = 'assets/sounds/golden.mp3';
+        sfxLevelEnd.src = 'assets/sounds/clear.mp3';
+        sfxBonus.src = 'assets/sounds/bonus.mp3';
+        sfxMst.src = 'assets/sounds/mst.mp3';
+
+
+        bgm.volume = 0.2;
         [sfxCatch, sfxPowerup, sfxClock, sfxGoldenIce, sfxLevelEnd, sfxBonus, sfxBomb, sfxMst].forEach(sfx => {
             if (sfx) sfx.volume = 0.7;
         });
+
+        // playSound関数をシンプル化 (HTMLでsrcが設定されている前提)
+        function playSound(audioElement) {
+            if (!audioElement) return;
+            audioElement.currentTime = 0; // 再生位置を最初に戻す
+            audioElement.play().catch(e => { console.error("Audio play failed:", e); });
+        };
+        // playSound(audioElement, soundName) の soundName 引数は不要になる
+
+        function playMusicForLevel(levelNum) {
+            const musicBaseName = levels[levelNum].music;
+            // playSound(bgm, musicBaseName); を以下のように変更
+            bgm.src = `assets/sounds/${musicBaseName}.mp3`; // .oggもあれば追加
+            bgm.load();
+            bgm.play().catch(e => console.error("BGM play failed:", e));
+        };
 
         function movePlayer(x) {
             const minX = 0;
@@ -131,26 +166,6 @@ bgm.volume = 0.2;
             }
         });
 
-        function playSound(audioElement, soundName) {
-            if (!audioElement) return;
-            const oggSource = audioElement.querySelector('source[type="audio/ogg"]') || document.createElement('source');
-            oggSource.src = `${soundName}.ogg`;
-            oggSource.type = 'audio/ogg';
-            const mp3Source = audioElement.querySelector('source[type="audio/mpeg"]') || document.createElement('source');
-            mp3Source.src = `${soundName}.mp3`;
-            mp3Source.type = 'audio/mpeg';
-            audioElement.innerHTML = '';
-            audioElement.appendChild(oggSource);
-            audioElement.appendChild(mp3Source);
-            audioElement.load();
-            audioElement.play().catch(e => { console.error("Audio play failed:", e); }); // エラーログを追加
-        };
-
-        function playMusicForLevel(levelNum) {
-            const musicBaseName = levels[levelNum].music;
-            playSound(bgm, musicBaseName);
-        };
-
         function createItem() {
             const canSpawnSuperBomb = level >= 2 && timeLeft < 30 && superBombSpawnedCount < 2 && Math.random() < 0.05;
             if (canSpawnSuperBomb) {
@@ -168,13 +183,15 @@ bgm.volume = 0.2;
             }
 
             const timeElapsed = 60 - timeLeft;
-            const bombProbabilityIncrease = (timeElapsed / 60) * 0.20;
+            // 爆弾の確率増加ロジックを削除
+            // const bombProbabilityIncrease = (timeElapsed / 60) * 0.20; 
+
             const monsterProbability = (timeElapsed / 60) * 0.10 + (level - 1) * 0.05;
 
             const dynamicItems = items.map(item => {
-                if (item.type === 'bomb') {
-                    return { ...item, probability: item.probability + bombProbabilityIncrease };
-                }
+                // if (item.type === 'bomb') { // 爆弾に関するロジックを削除
+                //     return { ...item, probability: item.probability + bombProbabilityIncrease };
+                // }
                 if (item.type.startsWith('monster')) {
                     return { ...item, probability: monsterProbability / 2 };
                 }
@@ -183,7 +200,8 @@ bgm.volume = 0.2;
 
             const rand = Math.random();
             let cumulativeProbability = 0;
-            const spawnableItems = dynamicItems.filter(item => item.type !== 'bonus-card' && item.type !== 'super-bomb');
+            // 'bomb'を除外するフィルタリングを追加
+            const spawnableItems = dynamicItems.filter(item => item.type !== 'bonus-card' && item.type !== 'super-bomb' && item.type !== 'bomb');
             const totalSpawnableProbability = spawnableItems.reduce((sum, item) => sum + item.probability, 0);
 
             let selectedItem = null;
@@ -235,10 +253,12 @@ bgm.volume = 0.2;
             } else if (itemData.type === 'ice-cream' && level >= 2) {
                 movesHorizontally = true;
                 horizontalSpeed = 5;
-            } else if (itemData.type === 'bomb' && level >= 3) {
-                movesHorizontally = true;
-                horizontalSpeed = 7;
-            }
+            } 
+            // 爆弾の水平移動ロジックを削除
+            // else if (itemData.type === 'bomb' && level >= 3) { 
+            //     movesHorizontally = true;
+            //     horizontalSpeed = 7;
+            // }
 
             if (movesHorizontally) {
                 itemElement.dataset.horizontalSpeed = horizontalSpeed * (Math.random() * 0.5 + 0.75);
@@ -326,8 +346,11 @@ bgm.volume = 0.2;
             const itemData = items.find(i => i.type === type);
             if (!itemData) return;
 
+            // AudioContextでの再生を試みる
             if (itemData.sfx && itemData.soundName) {
-                playSound(itemData.sfx, itemData.soundName);
+                // playSound(itemData.sfx, itemData.soundName); // 古い呼び出しを削除
+                // playSound関数は引数を一つしか取らないように変更されているため
+                playSound(itemData.sfx);
             }
 
             if (type === 'bonus-card') {
@@ -344,15 +367,16 @@ bgm.volume = 0.2;
             if (itemData.powerup && powerupLevel < 2) { // 2回までに制限
                 powerupLevel++;
                 player.style.transform = `scale(${1 + powerupLevel * 0.2})`; // 拡大率を調整 (0.25 -> 0.2)
-                // プレイヤーのbottom位置を調整 (player.offsetHeightは現在のサイズを反映)
-                player.style.bottom = `${gameContainer.offsetHeight * 0.08 + (player.offsetHeight * (powerupLevel - 1) * 0.2)}px`; 
+                
+                // bottom位置の調整を削除 (transform-originで対応)
+                // player.style.bottom = `${gameContainer.offsetHeight * 0.08 + (player.offsetHeight * (powerupLevel - 1) * 0.2)}px`; 
+                
                 if (powerupTimer) clearTimeout(powerupTimer);
-                powerupEndTime = Date.now() + (5000 * powerupLevel);
                 powerupTimer = setTimeout(() => {
                     powerupLevel = 0;
                     player.style.transform = 'scale(1)';
-                    player.style.bottom = `${gameContainer.offsetHeight * 0.08}px`; // 元の位置に戻す
-                }, powerupEndTime - Date.now());
+                    // player.style.bottom = `${gameContainer.offsetHeight * 0.08}px`; // 元の位置に戻すも削除
+                }, 5000 * powerupLevel); // powerupEndTime - Date.now() ではなくシンプルに計算
             }
             
             if (itemData.debuff) {
@@ -424,7 +448,6 @@ bgm.volume = 0.2;
             gameSpeed = levels[level].baseSpeed;
             powerupLevel = 0;
             if (powerupTimer) clearTimeout(powerupTimer);
-            powerupEndTime = 0;
             bonusCardSpawnedForLevel = false;
             superBombSpawnedCount = 0;
             isReversed = false;
@@ -433,7 +456,7 @@ bgm.volume = 0.2;
             if (slowTimer) clearTimeout(slowTimer);
             
             player.style.transform = 'scale(1)';
-            player.style.bottom = `${gameContainer.offsetHeight * 0.08}px`; // プレイヤーの位置を再設定
+            player.style.bottom = `0px`; // プレイヤーの位置を常に最下部に設定
             player.style.backgroundImage = 'url(\'player.png\')';
 
             playerX = gameContainer.offsetWidth / 2 - player.offsetWidth / 2;
@@ -441,10 +464,10 @@ bgm.volume = 0.2;
 
             const mainItem = items.find(i => i.type === 'ice-cream');
             if (mainItem) {
-                mainItem.image = `soft cream.png`;
-                mainItem.score = 10;
-                if (level === 2) { mainItem.image = 'candy.png'; mainItem.score = 15; }
-                if (level === 3) { mainItem.image = 'soft cream.png'; mainItem.score = 20; } // ice-2.png -> soft cream.png に一時的に変更
+                // レベル3のアイスクリーム画像を「ice 2.png」に変更
+                if (level === 1) { mainItem.image = 'soft cream.png'; mainItem.score = 10; }
+                else if (level === 2) { mainItem.image = 'candy.png'; mainItem.score = 15; }
+                else if (level === 3) { mainItem.image = 'ice 2.png'; mainItem.score = 20; } 
             }
 
             gameContainer.style.backgroundImage = `url('${levels[level].bg}')`;
@@ -453,6 +476,7 @@ bgm.volume = 0.2;
             gameInterval = setInterval(gameLoop, 50);
             timerInterval = setInterval(updateTimer, 1000);
             itemInterval = setInterval(createItem, levels[level].spawnRate);
+            playMusicForLevel(level); // BGM再生をstartLevelの最後に移動
         };
 
         function endLevel() {
@@ -460,7 +484,7 @@ bgm.volume = 0.2;
             clearInterval(timerInterval);
             clearInterval(itemInterval);
             bgm.pause();
-            playSound(sfxLevelEnd, 'clear');
+            playSound(sfxLevelEnd); // 引数を修正
 
             levelScores[level - 1] = score;
             totalScore = levelScores.reduce((a, b) => a + b, 0);
@@ -482,7 +506,7 @@ bgm.volume = 0.2;
         };
         
         startButton.addEventListener('click', () => {
-            // iOSでの音声再生アンロック
+            // iOSでの音声再生アンロックはすでに存在
             const audioContext = new (window.AudioContext || window.webkitAudioContext)();
             const buffer = audioContext.createBuffer(1, 1, 22050);
             const source = audioContext.createBufferSource();
@@ -491,42 +515,35 @@ bgm.volume = 0.2;
             source.start(0);
             
             startScreen.style.display = 'none';
-            playMusicForLevel(level);
-            startLevel();
+            // startLevel() の中で playMusicForLevel が呼ばれるように変更
+            startLevel(); 
         });
 
         nextLevelButton.addEventListener('click', () => {
             level++;
             levelEndScreen.style.display = 'none';
-            playMusicForLevel(level);
+            // startLevel() の中で playMusicForLevel が呼ばれるように変更
             startLevel();
         });
 
         restartButton.addEventListener('click', () => {
             level = 1;
-            levelScores = [0, 0, 0];
+            levelScores = [0, 0, 0]; // スコアをリセット
             totalScore = 0;
-            availableCards = [1, 2, 3];
             gameOverScreen.style.display = 'none';
-            playMusicForLevel(level);
+            // startLevel() の中で playMusicForLevel が呼ばれるように変更
             startLevel();
-            level1ScoreDisplay.innerText = 0;
-            level2ScoreDisplay.innerText = 0;
-            level3ScoreDisplay.innerText = 0;
-            totalScoreDisplay.innerText = 0;
         });
 
-        startScreen.style.backgroundImage = "url('start.jpg')";
-        player.style.backgroundImage = "url('player.png')";
-        startButton.disabled = false;
-        startButton.textContent = 'ゲームスタート！';
-    };
+        // ページロード時にゲームサイズを初期設定
+        setGameSize();
+        // ウィンドウのリサイズ時にゲームサイズを再設定
+        window.addEventListener('resize', setGameSize);
 
-    // Call setGameSize initially and on resize
-    setGameSize();
-    window.addEventListener('resize', setGameSize);
+        // プレイヤーの初期画像を設定
+        player.style.backgroundImage = 'url(\'player.png\')';
 
-    // After setting initial size, call the main game logic initialization
-    // A small timeout ensures the browser has rendered the new sizes before logic depends on them.
-    setTimeout(initializeGameLogic, 100);
+        // ゲームロジックをすぐに初期化（イベントリスナー等が設定される）
+        initializeGameLogic();
+    }
 };
