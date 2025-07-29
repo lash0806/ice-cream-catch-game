@@ -119,7 +119,7 @@ function initializeGame() {
     gameContainer.style.display = 'none'; // ゲーム画面を非表示
     player.style.width = '60px'; // プレイヤーの幅を初期値に戻す
     player.style.height = '60px'; // プレイヤーの高さを初期値に戻す
-    player.style.backgroundImage = 'url('player.png')'; // プレイヤー画像を初期値に戻す
+    player.style.backgroundImage = 'url(\'player.png\')'; // プレイヤー画像を初期値に戻す
     updateDisplay();
     // 音楽を停止し、初期化
     bgm.pause();
@@ -273,9 +273,9 @@ function handleCollision(item, itemType) {
         score += itemType.score;
         levelScore += itemType.score;
         sfxBomb.play();
-        player.style.backgroundImage = 'url('player_bomb.png')'; // プレイヤー画像を爆弾エフェクトに変更
+        player.style.backgroundImage = 'url(\'player_bomb.png\')'; // プレイヤー画像を爆弾エフェクトに変更
         setTimeout(() => {
-            player.style.backgroundImage = 'url('player.png')'; // 元に戻す
+            player.style.backgroundImage = 'url(\'player.png\')'; // 元に戻す
         }, 300); // 0.3秒後に戻す
     } else if (itemType.type === 'clock') {
         timeLeft += itemType.timeBonus;
