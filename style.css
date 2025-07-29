@@ -22,7 +22,8 @@ body, html {
     border: 3px solid #fff;
     box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
     margin: auto; /* 中央揃え */
-    /* サイズとアスペクト比はJSで制御するため削除 */
+    width: 800px; /* 仮の幅 */
+    height: 600px; /* 仮の高さ */
 }
 
 --- style.css ---
