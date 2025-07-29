@@ -26,7 +26,7 @@ const levelEndScreen = document.getElementById('level-end-screen');
 const levelScoreDisplay = document.getElementById('level-score');
 const nextLevelButton = document.getElementById('next-level-button');
 const gameOverScreen = document.getElementById('game-over-screen');
-const finalScoreDisplay = document.getElementById('final-score');
+const finalScoreDisplay = document = document.getElementById('final-score');
 const restartButton = document.getElementById('restart-button');
 
 // 各レベルのスコア表示用
@@ -47,14 +47,14 @@ const sfxLevelEnd = document.getElementById('sfx-level-end');
 const sfxBonus = document.getElementById('sfx-bonus');
 const sfxMst = document.getElementById('sfx-mst');
 
-// アイテムの種類と画像パス
+// アイテムの種類と画像パス (images/ を追加)
 const itemTypes = {
-    iceCream: { score: 10, src: 'ice cream.png', width: 40, height: 40, type: 'iceCream' },
-    iceCream2: { score: 15, src: 'ice 2.png', width: 40, height: 40, type: 'iceCream2' },
-    goldenIce: { score: 50, src: 'soft cream.png', width: 40, height: 40, type: 'goldenIce' },
-    bomb: { score: -20, src: 'bomb.png', width: 50, height: 50, type: 'bomb' },
-    clock: { score: 0, timeBonus: 10, src: 'clock.png', width: 40, height: 40, type: 'clock' },
-    powerUp: { score: 0, powerUp: true, src: 'powerup.png', width: 40, height: 40, type: 'powerUp' }
+    iceCream: { score: 10, src: 'images/ice cream.png', width: 40, height: 40, type: 'iceCream' },
+    iceCream2: { score: 15, src: 'images/ice 2.png', width: 40, height: 40, type: 'iceCream2' },
+    goldenIce: { score: 50, src: 'images/soft cream.png', width: 40, height: 40, type: 'goldenIce' },
+    bomb: { score: -20, src: 'images/bomb.png', width: 50, height: 50, type: 'bomb' },
+    clock: { score: 0, timeBonus: 10, src: 'images/clock.png', width: 40, height: 40, type: 'clock' },
+    powerUp: { score: 0, powerUp: true, src: 'images/powerup.png', width: 40, height: 40, type: 'powerUp' }
 };
 
 // レベルごとの設定
@@ -71,7 +71,7 @@ const levels = {
             clock: 0.03,
             powerUp: 0.02
         },
-        bg: 'bg-level-1.jpg'
+        bg: 'images/bg-level-1.jpg' // images/ を追加
     },
     2: {
         time: 60,
@@ -85,7 +85,7 @@ const levels = {
             clock: 0.03,
             powerUp: 0.03
         },
-        bg: 'bg-level-2.jpg'
+        bg: 'images/bg-level-2.jpg' // images/ を追加
     },
     3: {
         time: 60,
@@ -99,7 +99,7 @@ const levels = {
             clock: 0.03,
             powerUp: 0.02
         },
-        bg: 'bg-level-3.jpg'
+        bg: 'images/bg-level-3.jpg' // images/ を追加
     }
 };
 
@@ -119,7 +119,7 @@ function initializeGame() {
     gameContainer.style.display = 'none'; // ゲーム画面を非表示
     player.style.width = '60px'; // プレイヤーの幅を初期値に戻す
     player.style.height = '60px'; // プレイヤーの高さを初期値に戻す
-    player.style.backgroundImage = 'url(\'player.png\')'; // プレイヤー画像を初期値に戻す
+    player.style.backgroundImage = 'url(\'images/player.png\')'; // プレイヤー画像を初期値に戻す (images/ を追加)
     updateDisplay();
     // 音楽を停止し、初期化
     bgm.pause();
@@ -203,7 +203,7 @@ function dropItem() {
     const probabilities = levels[currentLevel].itemProbabilities;
 
     for (const type in probabilities) {
-        cumulativeProbability += probabilities[type];
+    cumulativeProbability += probabilities[type];
         if (rand < cumulativeProbability) {
             itemType = itemTypes[type];
             break;
@@ -273,9 +273,9 @@ function handleCollision(item, itemType) {
         score += itemType.score;
         levelScore += itemType.score;
         sfxBomb.play();
-        player.style.backgroundImage = 'url(\'player_bomb.png\')'; // プレイヤー画像を爆弾エフェクトに変更
+        player.style.backgroundImage = 'url(\'images/player_bomb.png\')'; // プレイヤー画像を爆弾エフェクトに変更 (images/ を追加)
         setTimeout(() => {
-            player.style.backgroundImage = 'url(\'player.png\')'; // 元に戻す
+            player.style.backgroundImage = 'url(\'images/player.png\')'; // 元に戻す (images/ を追加)
         }, 300); // 0.3秒後に戻す
     } else if (itemType.type === 'clock') {
         timeLeft += itemType.timeBonus;
