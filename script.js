@@ -116,7 +116,7 @@ function initializeGame() {
     levelEndScreen.style.display = 'none';
     gameOverScreen.style.display = 'none';
     startScreen.style.display = 'flex'; // スタート画面を表示
-    gameContainer.style.display = 'none'; // ゲーム画面を非表示
+    // gameContainer.style.display = 'none'; // ゲーム画面を非表示
     player.style.width = '60px'; // プレイヤーの幅を初期値に戻す
     player.style.height = '60px'; // プレイヤーの高さを初期値に戻す
     player.style.backgroundImage = 'url(\'player.png\')'; // プレイヤー画像を初期値に戻す
