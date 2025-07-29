@@ -4,7 +4,7 @@ body, html {
     padding: 0;
     overflow: hidden;
     font-family: 'M PLUS Rounded 1c', sans-serif;
-    background-color: #000;
+    background-color: red; /* 一時的に赤に変更 */
     display: flex;
     justify-content: center;
     align-items: center;
